@@ -1,0 +1,35 @@
+Loading DQN + XGBoost hybrid model...
+Model loaded successfully!
+Model metrics: {'train_accuracy': 0.9922147651006712, 'val_accuracy': 0.907725321888412, 'test_accuracy': 0.9158798283261803, 'val_roc_auc': 0.5215060339204175, 'test_roc_auc': 0.5608675799086758}
+
+================================================================================
+DQN + XGBoost Insurance Prediction API Server
+================================================================================
+Model: DQN + XGBoost Hybrid
+Features: 85 original + 32 DQN features = 117 total
+Test Accuracy: 0.9159
+Test ROC-AUC: 0.5609
+
+API Endpoints:
+- GET  /                           - Web interface
+- GET  /api/info                   - Model information
+- POST /api/predict                - Single prediction (JSON)
+- POST /api/predict_batch          - Batch predictions (JSON/CSV)
+- POST /api/predict_batch/download - Batch predictions (download CSV)
+- GET  /api/feature_importance     - Feature importance
+- GET  /api/example                - Get example input
+
+Starting server on http://localhost:8080
+================================================================================
+
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.20.10.2:8080
+Press CTRL+C to quit
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 119-378-943
+127.0.0.1 - - [16/Oct/2025 12:48:42] "GET / HTTP/1.1" 200 -
