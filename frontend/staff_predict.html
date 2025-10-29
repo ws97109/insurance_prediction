@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 保險預測系統 - 法國巴黎人壽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'paris-blue': '#2E5CB8',
+                        'paris-blue-dark': '#1E3A8A',
+                        'paris-blue-light': '#60A5FA',
+                        'paris-gold': '#F59E0B',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #1E3A8A 0%, #2E5CB8 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .radar-chart {
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.1) 0%, transparent 70%);
+        }
+        
+        .probability-bar {
+            transition: width 1s ease-out;
+        }
+        
+        .chat-bubble {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 頂部導航欄 -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="text-2xl font-bold">巴黎人壽</div>
+                    <div class="text-sm opacity-90">AI 智能決策系統</div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <span class="text-sm">業務員：王小華</span>
+                    <button class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition">
+                        登出
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <div class="flex h-[calc(100vh-72px)]">
+        <!-- 左側邊欄 -->
+        <aside class="w-64 bg-white shadow-lg">
+            <nav class="p-4 space-y-2">
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-paris-blue-light hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>儀表板</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-paris-blue-light hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>客戶管理</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-paris-blue text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>預測分析</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-paris-blue-light hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span>心理測評</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-paris-blue-light hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    <span>LINE 訊息</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主內容區 -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="container mx-auto p-6">
+                <!-- 頁面標題 -->
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">AI 預測分析</h1>
+                    <p class="text-gray-600 mt-2">基於客戶資料與心理測評，智能推薦最適合的保險產品</p>
+                </div>
+
+                <!-- 客戶選擇區 -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6 card-hover">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">選擇客戶</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">客戶姓名</label>
+                            <select id="customerSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-paris-blue focus:border-transparent" onchange="loadCustomerData()">
+                                <option value="">請選擇客戶</option>
+                                <option value="customer1">王大明</option>
+                                <option value="customer2">李小華</option>
+                                <option value="customer3">陳美玲</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">客戶類型</label>
+                            <div class="flex items-center h-10">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">新保戶</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">測評狀態</label>
+                            <div class="flex items-center h-10">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    已完成
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6">
+                    <!-- 左側：客戶資料與測評結果 -->
+                    <div class="col-span-1 space-y-6">
+                        <!-- 客戶基本資料 -->
+                        <div id="customerInfo" class="bg-white rounded-xl shadow-md p-6 card-hover" style="display: none;">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">客戶資料</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">年齡</span>
+                                    <span class="font-medium">35 歲</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">職業</span>
+                                    <span class="font-medium">軟體工程師</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">年收入</span>
+                                    <span class="font-medium">120 萬</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">婚姻狀況</span>
+                                    <span class="font-medium">已婚</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">子女數</span>
+                                    <span class="font-medium">1 人</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 心理測評結果 -->
+                        <div id="profileResult" class="bg-white rounded-xl shadow-md p-6 card-hover" style="display: none;">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">心理測評結果</h3>
+                            
+                            <!-- 風險類型 -->
+                            <div class="mb-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm text-gray-600">風險偏好</span>
+                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">平衡型</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+
+                            <!-- MBTI 類型 -->
+                            <div class="mb-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm text-gray-600">人格特質</span>
+                                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">ISTJ 型</span>
+                                </div>
+                                <p class="text-xs text-gray-500">務實、重視細節、喜歡數據分析</p>
+                            </div>
+
+                            <!-- 理財目標 -->
+                            <div class="mb-6">
+                                <span class="text-sm text-gray-600 block mb-2">理財目標</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">退休規劃</span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">子女教育</span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">財富增值</span>
+                                </div>
+                            </div>
+
+                            <!-- 溝通偏好 -->
+                            <div>
+                                <span class="text-sm text-gray-600 block mb-2">溝通偏好</span>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span>數據導向</span>
+                                        <div class="flex-1 mx-2 bg-gray-200 rounded-full h-1.5">
+                                            <div class="bg-paris-blue h-1.5 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <span class="text-gray-500">85%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span>故事型</span>
+                                        <div class="flex-1 mx-2 bg-gray-200 rounded-full h-1.5">
+                                            <div class="bg-paris-blue h-1.5 rounded-full" style="width: 45%"></div>
+                                        </div>
+                                        <span class="text-gray-500">45%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span>視覺化圖表</span>
+                                        <div class="flex-1 mx-2 bg-gray-200 rounded-full h-1.5">
+                                            <div class="bg-paris-blue h-1.5 rounded-full" style="width: 70%"></div>
+                                        </div>
+                                        <span class="text-gray-500">70%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 開始分析按鈕 -->
+                        <button id="analyzeBtn" onclick="startAnalysis()" class="w-full gradient-bg text-white py-3 rounded-lg font-medium hover:opacity-90 transition" style="display: none;">
+                            <span class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                開始 AI 預測分析
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- 右側：預測結果 -->
+                    <div class="col-span-2">
+                        <!-- 載入中提示 -->
+                        <div id="loadingState" class="bg-white rounded-xl shadow-md p-12 text-center" style="display: none;">
+                            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-paris-blue mx-auto mb-4"></div>
+                            <p class="text-gray-600">AI 正在分析客戶資料...</p>
+                            <p class="text-sm text-gray-500 mt-2">預計需要 3-5 秒</p>
+                        </div>
+
+                        <!-- 預測結果 -->
+                        <div id="predictionResult" class="space-y-6" style="display: none;">
+                            <!-- 推薦摘要 -->
+                            <div class="bg-gradient-to-r from-paris-blue to-paris-blue-dark text-white rounded-xl shadow-lg p-6">
+                                <h2 class="text-2xl font-bold mb-2">AI 預測完成</h2>
+                                <p class="text-blue-100">根據客戶資料與心理測評，我們為您找到了 <span class="text-paris-gold font-bold">5 個高度匹配</span>的保險產品</p>
+                            </div>
+
+                            <!-- Top 5 推薦保單 -->
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                                    <svg class="w-6 h-6 mr-2 text-paris-gold" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                    Top 5 推薦保單
+                                </h3>
+
+                                <div class="space-y-4">
+                                    <!-- 保單 1 -->
+                                    <div class="border-l-4 border-paris-gold bg-gradient-to-r from-yellow-50 to-white p-4 rounded-r-lg card-hover cursor-pointer" onclick="showProductDetail(1)">
+                                        <div class="flex items-start justify-between mb-3">
+                                            <div class="flex-1">
+                                                <div class="flex items-center mb-2">
+                                                    <span class="text-2xl mr-2">🥇</span>
+                                                    <h4 class="text-lg font-bold text-gray-800">變額萬能壽險 A</h4>
+                                                    <span class="ml-3 px-3 py-1 bg-paris-gold text-white rounded-full text-sm font-medium">87% 匹配</span>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mb-2">投資型保險 | 彈性繳費 | 多元投資標的</p>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                                <div class="probability-bar bg-gradient-to-r from-paris-gold to-yellow-500 h-3 rounded-full flex items-center justify-end pr-2" style="width: 87%">
+                                                    <span class="text-xs text-white font-medium">87%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 text-sm">
+                                            <p class="text-gray-700 mb-2"><span class="font-semibold text-paris-blue">💡 AI 推薦理由：</span></p>
+                                            <ul class="space-y-1 text-gray-600">
+                                                <li>✓ 符合客戶「平衡型」風險偏好</li>
+                                                <li>✓ 滿足退休規劃與財富增值目標</li>
+                                                <li>✓ 提供彈性繳費，適合工程師收入型態</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- 保單 2 -->
+                                    <div class="border-l-4 border-gray-300 bg-gradient-to-r from-gray-50 to-white p-4 rounded-r-lg card-hover cursor-pointer" onclick="showProductDetail(2)">
+                                        <div class="flex items-start justify-between mb-3">
+                                            <div class="flex-1">
+                                                <div class="flex items-center mb-2">
+                                                    <span class="text-2xl mr-2">🥈</span>
+                                                    <h4 class="text-lg font-bold text-gray-800">利率變動型終身壽險</h4>
+                                                    <span class="ml-3 px-3 py-1 bg-gray-400 text-white rounded-full text-sm font-medium">76% 匹配</span>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mb-2">保障型保險 | 穩健增值 | 終身保障</p>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                                <div class="probability-bar bg-gradient-to-r from-gray-400 to-gray-500 h-3 rounded-full" style="width: 76%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 text-sm">
+                                            <p class="text-gray-700"><span class="font-semibold text-paris-blue">💡 AI 推薦理由：</span>提供長期保障，穩健增值特性符合客戶財務規劃需求</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- 保單 3 -->
+                                    <div class="border-l-4 border-orange-300 bg-gradient-to-r from-orange-50 to-white p-4 rounded-r-lg card-hover cursor-pointer" onclick="showProductDetail(3)">
+                                        <div class="flex items-start justify-between mb-3">
+                                            <div class="flex-1">
+                                                <div class="flex items-center mb-2">
+                                                    <span class="text-2xl mr-2">🥉</span>
+                                                    <h4 class="text-lg font-bold text-gray-800">變額年金保險</h4>
+                                                    <span class="ml-3 px-3 py-1 bg-orange-400 text-white rounded-full text-sm font-medium">68% 匹配</span>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mb-2">退休規劃 | 年金給付 | 投資理財</p>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                                <div class="probability-bar bg-gradient-to-r from-orange-400 to-orange-500 h-3 rounded-full" style="width: 68%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 text-sm">
+                                            <p class="text-gray-700"><span class="font-semibold text-paris-blue">💡 AI 推薦理由：</span>高度契合退休規劃目標，提供穩定年金給付</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- 保單 4 -->
+                                    <div class="border-l-4 border-blue-200 bg-white p-4 rounded-r-lg card-hover cursor-pointer" onclick="showProductDetail(4)">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <span class="text-lg mr-2">4️⃣</span>
+                                                <h4 class="font-semibold text-gray-800">子女教育金保險</h4>
+                                            </div>
+                                            <span class="px-3 py-1 bg-blue-200 text-blue-800 rounded-full text-sm font-medium">61% 匹配</span>
+                                        </div>
+                                        <div class="mt-2">
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="probability-bar bg-blue-400 h-2 rounded-full" style="width: 61%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 保單 5 -->
+                                    <div class="border-l-4 border-green-200 bg-white p-4 rounded-r-lg card-hover cursor-pointer" onclick="showProductDetail(5)">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <span class="text-lg mr-2">5️⃣</span>
+                                                <h4 class="font-semibold text-gray-800">實物給付醫療險</h4>
+                                            </div>
+                                            <span class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-sm font-medium">55% 匹配</span>
+                                        </div>
+                                        <div class="mt-2">
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="probability-bar bg-green-400 h-2 rounded-full" style="width: 55%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AI 生成推薦話術 -->
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                                    <svg class="w-6 h-6 mr-2 text-paris-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                                    </svg>
+                                    AI 生成推薦話術
+                                </h3>
+
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-5 border border-blue-200">
+                                    <div class="flex items-start mb-3">
+                                        <div class="bg-paris-blue text-white rounded-full p-2 mr-3">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="text-sm font-medium text-gray-700">針對變額萬能壽險 A</span>
+                                                <span class="text-xs text-gray-500">基於 ISTJ 型 + 數據導向溝通</span>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                                <p class="text-gray-800 leading-relaxed mb-3">
+                                                    <span class="font-semibold">王先生您好：</span><br><br>
+                                                    根據您的財務狀況與退休規劃目標，我為您精選了這款<span class="font-semibold text-paris-blue">變額萬能壽險 A</span>。以下是三個關鍵數據供您參考：
+                                                </p>
+                                                <div class="space-y-2 mb-3 bg-blue-50 p-3 rounded">
+                                                    <p class="text-sm">📊 <span class="font-semibold">投資報酬率：</span>過去 5 年平均年化報酬達 6.8%</p>
+                                                    <p class="text-sm">💰 <span class="font-semibold">彈性繳費：</span>可依您的收入調整保費，最低 3 萬元起</p>
+                                                    <p class="text-sm">🎯 <span class="font-semibold">退休規劃：</span>若每年投入 12 萬，預估 60 歲可累積 850 萬退休金</p>
+                                                </div>
+                                                <p class="text-gray-700 text-sm">
+                                                    這份保單特別適合像您這樣重視數據、追求穩健增值的客戶。您方便的話，我可以為您準備更詳細的投資試算報告。
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-blue-200">
+                                        <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span>話術已根據客戶測評優化</span>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">
+                                                ✏️ 編輯
+                                            </button>
+                                            <button class="px-4 py-2 bg-paris-blue text-white rounded-lg text-sm hover:opacity-90 transition">
+                                                📋 複製話術
+                                            </button>
+                                            <button class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:opacity-90 transition">
+                                                💬 發送至 LINE
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 其他話術版本 -->
+                                <div class="mt-4">
+                                    <button class="text-paris-blue text-sm hover:underline flex items-center" onclick="toggleOtherScripts()">
+                                        <span id="toggleIcon">▶</span>
+                                        <span class="ml-2">查看其他話術版本（情感型、視覺型）</span>
+                                    </button>
+                                    <div id="otherScripts" class="mt-3 space-y-3" style="display: none;">
+                                        <div class="bg-pink-50 rounded-lg p-4 border border-pink-200">
+                                            <span class="text-xs text-pink-700 font-medium">情感導向版本</span>
+                                            <p class="text-sm text-gray-700 mt-2">王先生，看到您對家人的用心，我深受感動。這份保單不只是投資，更是對家人的承諾...</p>
+                                        </div>
+                                        <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                                            <span class="text-xs text-purple-700 font-medium">視覺圖表版本</span>
+                                            <p class="text-sm text-gray-700 mt-2">我為您準備了一份詳細的投資曲線圖，讓您清楚看到 30 年後的財富累積狀況...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 完整 21 種保單分析 -->
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-semibold text-gray-800">完整 21 種保單分析</h3>
+                                    <button class="text-paris-blue text-sm hover:underline" onclick="toggleFullAnalysis()">
+                                        <span id="fullAnalysisToggle">展開查看 ▼</span>
+                                    </button>
+                                </div>
+                                <div id="fullAnalysis" style="display: none;">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="border rounded p-3 text-sm">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span>變額萬能壽險 A</span>
+                                                <span class="text-paris-gold font-bold">87%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-paris-gold h-1.5 rounded-full" style="width: 87%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="border rounded p-3 text-sm">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span>利率變動型終身壽險</span>
+                                                <span class="text-gray-600 font-bold">76%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-gray-500 h-1.5 rounded-full" style="width: 76%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="border rounded p-3 text-sm">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span>變額年金保險</span>
+                                                <span class="text-gray-600 font-bold">68%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-orange-400 h-1.5 rounded-full" style="width: 68%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="border rounded p-3 text-sm">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span>子女教育金保險</span>
+                                                <span class="text-gray-600 font-bold">61%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-blue-400 h-1.5 rounded-full" style="width: 61%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="border rounded p-3 text-sm">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span>實物給付醫療險</span>
+                                                <span class="text-gray-600 font-bold">55%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-green-400 h-1.5 rounded-full" style="width: 55%"></div>
+                                            </div>
+                                        </div>
+                                        <!-- 其他 16 個保單... -->
+                                        <div class="border rounded p-3 text-sm opacity-60">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span>傳統壽險</span>
+                                                <span class="text-gray-500">42%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-gray-400 h-1.5 rounded-full" style="width: 42%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="border rounded p-3 text-sm opacity-60">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span>癌症險</span>
+                                                <span class="text-gray-500">38%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-gray-400 h-1.5 rounded-full" style="width: 38%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-span-2 text-center text-gray-500 text-sm py-2">
+                                            ... 其他 14 種保單（點擊展開查看詳細）
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 初始提示 -->
+                        <div id="emptyState" class="bg-white rounded-xl shadow-md p-12 text-center">
+                            <svg class="w-24 h-24 mx-auto mb-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">開始 AI 預測分析</h3>
+                            <p class="text-gray-600 mb-6">請先選擇客戶，系統將自動載入客戶資料與心理測評結果</p>
+                            <div class="inline-flex items-center px-4 py-2 bg-blue-50 text-paris-blue rounded-lg text-sm">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                </svg>
+                                提示：完成心理測評的客戶可獲得更精準的推薦
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 右側 AI 助手（可收合） -->
+        <aside id="aiAssistant" class="w-96 bg-white shadow-lg border-l border-gray-200 flex flex-col">
+            <!-- 助手標題 -->
+            <div class="gradient-bg text-white p-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                    </svg>
+                    <span class="font-semibold">AI 助手</span>
+                    <span class="ml-2 pulse-dot w-2 h-2 bg-green-400 rounded-full"></span>
+                </div>
+                <button onclick="toggleAiAssistant()" class="hover:bg-white/20 p-1 rounded">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 對話區域 -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatMessages">
+                <div class="chat-bubble bg-gray-100 rounded-lg p-3 text-sm">
+                    <p class="text-gray-700">您好！我是 AI 助手，可以協助您：</p>
+                    <ul class="mt-2 space-y-1 text-gray-600 text-xs">
+                        <li>• 解答保單相關問題</li>
+                        <li>• 分析客戶需求</li>
+                        <li>• 提供銷售建議</li>
+                        <li>• 辨識上傳的文件（OCR）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 輸入區域 -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex space-x-2">
+                    <input type="text" id="chatInput" placeholder="輸入您的問題..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-paris-blue focus:border-transparent" onkeypress="handleChatKeypress(event)">
+                    <button onclick="sendMessage()" class="gradient-bg text-white px-4 py-2 rounded-lg hover:opacity-90 transition">
+                        發送
+                    </button>
+                </div>
+                <button class="w-full mt-2 text-sm text-paris-blue hover:bg-blue-50 py-2 rounded-lg transition">
+                    📎 上傳文件 (OCR)
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        let aiAssistantVisible = true;
+
+        function loadCustomerData() {
+            const select = document.getElementById('customerSelect');
+            if (select.value) {
+                // 顯示客戶資料
+                document.getElementById('customerInfo').style.display = 'block';
+                document.getElementById('profileResult').style.display = 'block';
+                document.getElementById('analyzeBtn').style.display = 'block';
+            } else {
+                document.getElementById('customerInfo').style.display = 'none';
+                document.getElementById('profileResult').style.display = 'none';
+                document.getElementById('analyzeBtn').style.display = 'none';
+            }
+        }
+
+        function startAnalysis() {
+            // 隱藏空狀態
+            document.getElementById('emptyState').style.display = 'none';
+            
+            // 顯示載入中
+            document.getElementById('loadingState').style.display = 'block';
+            
+            // 模擬 AI 分析過程
+            setTimeout(() => {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('predictionResult').style.display = 'block';
+                
+                // 平滑滾動到結果
+                document.getElementById('predictionResult').scrollIntoView({ behavior: 'smooth' });
+            }, 3000);
+        }
+
+        function toggleAiAssistant() {
+            const assistant = document.getElementById('aiAssistant');
+            if (aiAssistantVisible) {
+                assistant.style.display = 'none';
+                aiAssistantVisible = false;
+            } else {
+                assistant.style.display = 'flex';
+                aiAssistantVisible = true;
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                const chatMessages = document.getElementById('chatMessages');
+                
+                // 用戶訊息
+                const userMessage = document.createElement('div');
+                userMessage.className = 'chat-bubble bg-paris-blue text-white rounded-lg p-3 text-sm ml-auto max-w-[80%]';
+                userMessage.textContent = message;
+                chatMessages.appendChild(userMessage);
+                
+                // 清空輸入
+                input.value = '';
+                
+                // 模擬 AI 回應
+                setTimeout(() => {
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'chat-bubble bg-gray-100 rounded-lg p-3 text-sm';
+                    aiMessage.innerHTML = '<p class="text-gray-700">根據您的問題，這是我的建議...</p>';
+                    chatMessages.appendChild(aiMessage);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1000);
+                
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function showProductDetail(productId) {
+            alert('查看產品 ' + productId + ' 的詳細資訊（可以展開為完整頁面或彈出視窗）');
+        }
+
+        function toggleOtherScripts() {
+            const scripts = document.getElementById('otherScripts');
+            const icon = document.getElementById('toggleIcon');
+            if (scripts.style.display === 'none') {
+                scripts.style.display = 'block';
+                icon.textContent = '▼';
+            } else {
+                scripts.style.display = 'none';
+                icon.textContent = '▶';
+            }
+        }
+
+        function toggleFullAnalysis() {
+            const analysis = document.getElementById('fullAnalysis');
+            const toggle = document.getElementById('fullAnalysisToggle');
+            if (analysis.style.display === 'none') {
+                analysis.style.display = 'block';
+                toggle.textContent = '收起 ▲';
+            } else {
+                analysis.style.display = 'none';
+                toggle.textContent = '展開查看 ▼';
+            }
+        }
+    </script>
+</body>
+</html>
